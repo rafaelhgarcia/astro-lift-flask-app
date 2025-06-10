@@ -1,0 +1,102 @@
+MANUAL DE USUARIO - ASTRO LIFT RENTAL
+===============================
+
+PREPARACIÓN ANTES DE LA PRESENTACIÓN
+----------------------------------
+1. Asegúrate de tener Python instalado en tu computadora
+2. Verifica que estés en la carpeta correcta: C:\Astro\flask_app
+3. Cierra cualquier otra instancia de la aplicación que pueda estar corriendo
+
+PASOS PARA INICIAR LA APLICACIÓN
+-------------------------------
+1. Abre PowerShell o Command Prompt (CMD)
+2. Navega a la carpeta de la aplicación:
+   - Escribe: cd C:\Astro\flask_app
+   - Presiona Enter
+
+3. Inicia la aplicación:
+   - Escribe: python app.py
+   - Presiona Enter
+   - Espera hasta ver el mensaje "Running on http://127.0.0.1:5000"
+
+4. Abre tu navegador web (Chrome, Firefox, Edge)
+5. En la barra de direcciones escribe: http://127.0.0.1:5000
+   - La página principal de Astro Lift Rental debería aparecer
+
+CREDENCIALES DE ACCESO
+---------------------
+Para acceder al panel de administración:
+- Usuario: admin
+- Contraseña: AstroLift2024
+
+ESTRUCTURA DE LA APLICACIÓN
+-------------------------
+1. Página Principal (http://127.0.0.1:5000)
+   - Muestra los servicios principales
+   - Paneles interactivos con imágenes
+   - Animaciones y efectos visuales
+
+2. Página de Contacto (http://127.0.0.1:5000/contacto)
+   - Formulario de contacto
+   - Información de la empresa
+   - Ubicación y teléfonos
+
+3. Panel de Administración (http://127.0.0.1:5000/intranet)
+   - Requiere inicio de sesión
+   - Gestión de servicios y tareas
+   - Vista de solicitudes de contacto
+
+SOLUCIÓN DE PROBLEMAS COMUNES
+---------------------------
+1. Si la página no carga:
+   - Verifica que la aplicación esté corriendo (ventana de PowerShell abierta)
+   - Asegúrate de escribir correctamente la dirección: http://127.0.0.1:5000
+   - Intenta refrescar la página
+
+2. Si no puedes iniciar sesión:
+   - Verifica las credenciales (mayúsculas y minúsculas importan)
+   - Limpia el caché del navegador
+   - Intenta en una ventana de incógnito
+
+3. Si la aplicación no inicia:
+   - Cierra todas las instancias de PowerShell
+   - Navega nuevamente a la carpeta
+   - Intenta reiniciar la aplicación
+
+4. Si ves errores de base de datos:
+   - Asegúrate de que no haya otra instancia de la aplicación corriendo
+   - Cierra y vuelve a abrir PowerShell
+   - Reinicia la aplicación
+
+RECOMENDACIONES PARA LA PRESENTACIÓN
+---------------------------------
+1. Antes de la presentación:
+   - Haz una prueba completa del sistema
+   - Verifica que todas las páginas carguen correctamente
+   - Ten abiertas las credenciales de acceso
+   - Limpia el historial de tareas si es necesario
+
+2. Durante la presentación:
+   - Muestra primero la página principal y sus características
+   - Demuestra el formulario de contacto
+   - Accede al panel de administración
+   - Muestra la gestión de servicios
+
+3. Ten a mano:
+   - Este manual
+   - Las credenciales de acceso
+   - La dirección de la aplicación
+
+CONTACTO DE SOPORTE
+-----------------
+Si encuentras algún problema durante la presentación:
+1. Verifica este manual
+2. Asegúrate de seguir todos los pasos en orden
+3. Si el problema persiste, contacta al equipo de desarrollo
+
+¡IMPORTANTE!
+-----------
+- No cierres la ventana de PowerShell mientras la aplicación esté en uso
+- Mantén una copia de seguridad de la base de datos
+- Verifica la conexión a internet si usarás características de correo
+- Ten el manual y credenciales a mano durante la presentación 

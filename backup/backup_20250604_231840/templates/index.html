@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astro Lift Rental</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/" data-aos="fade-right" data-aos-duration="1000">
+                <i class="fas fa-truck-ramp me-2"></i>Astro Lift Rental
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="100">
+                        <a class="nav-link active" href="/">Inicio</a>
+                    </li>
+                    <li class="nav-item" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
+                        <a class="nav-link" href="/contacto">Contacto</a>
+                    </li>
+                    <li class="nav-item" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="300">
+                        <a class="nav-link" href="/intranet">
+                            <i class="fas fa-lock me-1"></i>Intranet
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section con animación de texto -->
+    <div class="hero-section text-center py-5" data-aos="fade-up" data-aos-duration="1000">
+        <h1 class="display-4 mb-4" data-aos="fade-down" data-aos-duration="1200">Elevamos Tu Negocio al Siguiente Nivel</h1>
+        <p class="lead mb-4" data-aos="fade-up" data-aos-duration="1200" data-aos-delay="200">
+            Soluciones profesionales en equipos de elevación y maquinaria especializada
+        </p>
+        <a href="/contacto" class="btn btn-primary btn-lg" data-aos="zoom-in" data-aos-duration="800" data-aos-delay="400">
+            Solicitar Cotización
+        </a>
+    </div>
+
+    <!-- Estadísticas Animadas -->
+    <div class="stats-section py-5">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-3 mb-4" data-aos="fade-up" data-aos-duration="1000">
+                    <div class="stat-item">
+                        <i class="fas fa-truck-ramp fa-3x mb-3"></i>
+                        <h3 class="counter" data-target="500">0</h3>
+                        <p>Equipos Disponibles</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+                    <div class="stat-item">
+                        <i class="fas fa-users fa-3x mb-3"></i>
+                        <h3 class="counter" data-target="1000">0</h3>
+                        <p>Clientes Satisfechos</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">
+                    <div class="stat-item">
+                        <i class="fas fa-map-marker-alt fa-3x mb-3"></i>
+                        <h3 class="counter" data-target="50">0</h3>
+                        <p>Ciudades Atendidas</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="600">
+                    <div class="stat-item">
+                        <i class="fas fa-certificate fa-3x mb-3"></i>
+                        <h3 class="counter" data-target="15">0</h3>
+                        <p>Años de Experiencia</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="cards-container">
+            <div class="panel active" style="background-image: url('{{ url_for('static', filename='images/sissor_lift.jpg') }}')" 
+                data-aos="zoom-in" data-aos-duration="1200">
+                <div class="panel-content">
+                    <h3>Plataformas de Tijera</h3>
+                    <p>Equipos versátiles para trabajos en altura con máxima estabilidad.</p>
+                </div>
+            </div>
+
+            <div class="panel" style="background-image: url('{{ url_for('static', filename='images/boom_lift.jpg') }}')"
+                data-aos="zoom-in" data-aos-duration="1200" data-aos-delay="100">
+                <div class="panel-content">
+                    <h3>Brazos Articulados</h3>
+                    <p>Soluciones de acceso para lugares de difícil alcance.</p>
+                </div>
+            </div>
+
+            <div class="panel" style="background-image: url('{{ url_for('static', filename='images/sissor_lift_2.jpg') }}')"
+                data-aos="zoom-in" data-aos-duration="1200" data-aos-delay="200">
+                <div class="panel-content">
+                    <h3>Equipos Especializados</h3>
+                    <p>Maquinaria específica para cada tipo de trabajo en altura.</p>
+                </div>
+            </div>
+
+            <div class="panel" style="background-image: url('{{ url_for('static', filename='images/maquinaria.jpg') }}')"
+                data-aos="zoom-in" data-aos-duration="1200" data-aos-delay="300">
+                <div class="panel-content">
+                    <h3>Maquinaria</h3>
+                    <p>Amplia gama de equipos para construcción y mantenimiento.</p>
+                </div>
+            </div>
+
+            <div class="panel" style="background-image: url('{{ url_for('static', filename='images/servicios.jpg') }}')"
+                data-aos="zoom-in" data-aos-duration="1200" data-aos-delay="400">
+                <div class="panel-content">
+                    <h3>Servicios</h3>
+                    <p>Mantenimiento, reparación y soporte técnico especializado.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="/contacto" class="btn-floating" data-aos="fade-up" data-aos-duration="800" data-aos-offset="0">
+        <i class="fas fa-envelope"></i>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Inicializar AOS
+        AOS.init({
+            once: true, // Las animaciones solo ocurren una vez
+            mirror: false, // No animar elementos al salir de la vista
+            offset: 100 // Comenzar la animación cuando el elemento está a 100px de la ventana
+        });
+
+        // Código existente para los paneles
+        const panels = document.querySelectorAll('.panel')
+
+        panels.forEach(panel => {
+            panel.addEventListener('click', () => {
+                removeActiveClasses()
+                panel.classList.add('active')
+            })
+        })
+
+        function removeActiveClasses() {
+            panels.forEach(panel => {
+                panel.classList.remove('active')
+            })
+        }
+
+        // Animación de contadores
+        const counters = document.querySelectorAll('.counter');
+        const speed = 200;
+
+        const animateCounter = (counter) => {
+            const target = +counter.getAttribute('data-target');
+            let count = 0;
+            
+            const updateCount = () => {
+                const increment = target / speed;
+                
+                if (count < target) {
+                    count = Math.ceil(count + increment);
+                    counter.innerText = count;
+                    setTimeout(updateCount, 1);
+                } else {
+                    counter.innerText = target;
+                }
+            };
+            
+            updateCount();
+        };
+
+        // Iniciar animación de contadores cuando sean visibles
+        const observerOptions = {
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        counters.forEach(counter => {
+            observer.observe(counter);
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,497 @@
+{% extends "base.html" %}
+
+{% block title %}Intranet - Astro Lift Rental{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <h1 class="display-4 mb-0">Intranet de Servicios</h1>
+            <a href="{{ url_for('logout') }}" class="btn btn-outline-danger">
+                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+            </a>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="task-container">
+        <form class="task-form" method="POST" action="{{ url_for('agregar_tarea') }}" enctype="multipart/form-data">
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Tipo de Servicio</label>
+                    <select class="form-select" name="titulo" required>
+                        <option value="" disabled selected>▼ Seleccionar Servicio</option>
+                        <option value="Alquiler">Alquiler de Equipos</option>
+                        <option value="Transporte">Servicio de Transporte</option>
+                        <option value="Mantenimiento">Mantenimiento</option>
+                    </select>
+                </div>
+                <div class="col-md-8">
+                    <label class="form-label">Descripción</label>
+                    <input type="text" class="form-control" name="descripcion" placeholder="Detalles del servicio" required>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label for="foto1" class="form-label">Foto del Equipo</label>
+                    <div class="input-group">
+                        <input type="file" class="form-control" id="foto1" name="foto1" accept="image/*" capture="environment">
+                        <button type="button" class="btn btn-outline-light" onclick="activarCamara('camera1', 'foto1', 'preview1')">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+                    <div id="preview1" class="preview-container mt-2"></div>
+                </div>
+                <div class="col-md-6">
+                    <label for="foto2" class="form-label">Foto Adicional</label>
+                    <div class="input-group">
+                        <input type="file" class="form-control" id="foto2" name="foto2" accept="image/*" capture="environment">
+                        <button type="button" class="btn btn-outline-light" onclick="activarCamara('camera2', 'foto2', 'preview2')">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+                    <div id="preview2" class="preview-container mt-2"></div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-3">
+                    <label for="fecha_inicio" class="form-label">Fecha de Inicio</label>
+                    <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="fecha_final" class="form-label">Fecha Final</label>
+                    <input type="date" class="form-control" id="fecha_final" name="fecha_final" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="hora_inicio" class="form-label">Hora de Inicio</label>
+                    <input type="time" class="form-control" id="hora_inicio" name="hora_inicio" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="hora_fin" class="form-label">Hora de Finalización</label>
+                    <input type="time" class="form-control" id="hora_fin" name="hora_fin" required>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-12">
+                    <div class="service-duration p-3">
+                        <label class="form-label mb-2">Duración del Servicio</label>
+                        <div id="duracion_servicio" class="duration-display">
+                            <span class="duration-value">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="client-details">
+                <div class="client-details-title">Datos del Cliente</div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="nombre" placeholder="Nombre" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="apellido" placeholder="Apellido" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="email" class="form-control" name="email" placeholder="Email" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="tel" class="form-control" name="telefono" placeholder="Teléfono" required>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label small">Dirección Base: 2451 West Grapevine Mills Circle Grapevine, TX 76051 suite 544</label>
+                        <input type="text" class="form-control" id="direccion_cliente" name="direccion" placeholder="Dirección del Cliente" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="ciudad" placeholder="Ciudad" required>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-outline-light w-100" onclick="calcularDistancia()">
+                            <i class="fas fa-route me-2"></i>Calcular Distancia
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <div class="mileage-info p-3">
+                            <label class="form-label mb-2">Distancia del Recorrido</label>
+                            <div id="distancia_recorrido" class="mileage-display">
+                                <span class="mileage-value">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-save me-2"></i>Guardar Servicio
+                </button>
+            </div>
+        </form>
+
+        <div class="mt-5">
+            <h3 class="text-white mb-4">Servicios Registrados</h3>
+            {% if tareas %}
+                {% for tarea in tareas %}
+                    <div class="task-item {% if tarea.completada %}completed{% endif %}">
+                        <div class="task-content">
+                            <div class="service-header d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="text-white mb-0">
+                                    <i class="fas {% if tarea.titulo == 'Alquiler' %}fa-truck-loading{% elif tarea.titulo == 'Transporte' %}fa-truck{% else %}fa-tools{% endif %} me-2"></i>
+                                    {{ tarea.titulo }}
+                                </h4>
+                                <span class="badge {% if tarea.completada %}bg-success{% else %}bg-warning{% endif %}">
+                                    {{ 'Completado' if tarea.completada else 'Pendiente' }}
+                                </span>
+                            </div>
+                            
+                            <div class="service-details">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <p class="mb-2"><strong class="text-white">Cliente:</strong> 
+                                            <span class="text-white-50">{{ tarea.nombre }} {{ tarea.apellido }}</span>
+                                        </p>
+                                        <p class="mb-2"><strong class="text-white">Teléfono:</strong> 
+                                            <span class="text-white-50">{{ tarea.telefono }}</span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="mb-2"><strong class="text-white">Inicio:</strong> 
+                                            <span class="text-white-50">{{ tarea.fecha_inicio }} {{ tarea.hora_inicio }}</span>
+                                        </p>
+                                        <p class="mb-2"><strong class="text-white">Fin:</strong> 
+                                            <span class="text-white-50">{{ tarea.fecha_final }} {{ tarea.hora_fin }}</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <p class="mt-2 mb-0"><strong class="text-white">Descripción:</strong> 
+                                    <span class="text-white-50">{{ tarea.descripcion }}</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <a href="{{ url_for('completar_tarea', id=tarea.id) }}" 
+                               class="btn btn-sm {% if tarea.completada %}btn-success{% else %}btn-outline-success{% endif %}"
+                               title="{{ 'Marcar como pendiente' if tarea.completada else 'Marcar como completado' }}">
+                                <i class="fas {% if tarea.completada %}fa-check-circle{% else %}fa-circle{% endif %}"></i>
+                            </a>
+                            <a href="{{ url_for('eliminar_tarea', id=tarea.id) }}" 
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('¿Estás seguro de eliminar este servicio?')"
+                               title="Eliminar servicio">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-center text-white-50">No hay servicios registrados</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div id="camera1" class="camera-container" style="display: none;">
+    <video id="video1" autoplay playsinline></video>
+    <button type="button" class="btn btn-primary" onclick="tomarFoto('video1', 'foto1', 'preview1', 'camera1')">
+        <i class="fas fa-camera me-2"></i>Capturar
+    </button>
+</div>
+
+<div id="camera2" class="camera-container" style="display: none;">
+    <video id="video2" autoplay playsinline></video>
+    <button type="button" class="btn btn-primary" onclick="tomarFoto('video2', 'foto2', 'preview2', 'camera2')">
+        <i class="fas fa-camera me-2"></i>Capturar
+    </button>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .task-container {
+        background: rgba(30, 30, 30, 0.9);
+        border-radius: 15px;
+        padding: 30px;
+        margin: 20px auto;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .task-form {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 25px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+    .task-item {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+    .task-item.completed {
+        background: rgba(40, 167, 69, 0.2);
+    }
+    .task-content {
+        flex-grow: 1;
+        margin-right: 20px;
+    }
+    .task-actions {
+        display: flex;
+        gap: 10px;
+    }
+    .form-control, .form-select {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 10px;
+    }
+    .form-control:focus, .form-select:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+        color: white;
+        box-shadow: none;
+    }
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+    .form-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='white' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 12px;
+        padding-right: 30px;
+        cursor: pointer;
+    }
+    .client-details {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+    .client-details-title {
+        color: white;
+        font-size: 1.1em;
+        margin-bottom: 20px;
+    }
+    .service-duration, .mileage-info {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .duration-display, .mileage-display {
+        color: white;
+        text-align: center;
+        padding: 10px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 6px;
+    }
+    .camera-container {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.9);
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        z-index: 1000;
+    }
+    .camera-container video {
+        max-width: 100%;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+    .preview-container img {
+        max-width: 200px;
+        border-radius: 8px;
+        margin-top: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let streamRef1 = null;
+let streamRef2 = null;
+
+async function activarCamara(cameraId, inputId, previewId) {
+    try {
+        const cameraContainer = document.getElementById(cameraId);
+        const video = cameraContainer.querySelector('video');
+        
+        if (cameraContainer.style.display === 'none') {
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { facingMode: 'environment' } 
+            });
+            
+            video.srcObject = stream;
+            if (cameraId === 'camera1') {
+                streamRef1 = stream;
+            } else {
+                streamRef2 = stream;
+            }
+            
+            cameraContainer.style.display = 'block';
+        } else {
+            cerrarCamara(cameraId);
+        }
+    } catch (err) {
+        console.error('Error al acceder a la cámara:', err);
+        alert('No se pudo acceder a la cámara. Por favor, verifica los permisos.');
+    }
+}
+
+function cerrarCamara(cameraId) {
+    const container = document.getElementById(cameraId);
+    const video = container.querySelector('video');
+    
+    if (cameraId === 'camera1' && streamRef1) {
+        streamRef1.getTracks().forEach(track => track.stop());
+        streamRef1 = null;
+    } else if (streamRef2) {
+        streamRef2.getTracks().forEach(track => track.stop());
+        streamRef2 = null;
+    }
+    
+    video.srcObject = null;
+    container.style.display = 'none';
+}
+
+function tomarFoto(videoId, inputId, previewId, cameraId) {
+    const video = document.getElementById(videoId);
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    const context = canvas.getContext('2d');
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    canvas.toBlob((blob) => {
+        const file = new File([blob], 'foto.jpg', { type: 'image/jpeg' });
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        document.getElementById(inputId).files = dataTransfer.files;
+        
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(blob);
+        const preview = document.getElementById(previewId);
+        preview.innerHTML = '';
+        preview.appendChild(img);
+        
+        cerrarCamara(cameraId);
+    }, 'image/jpeg', 0.95);
+}
+
+function calcularDuracionServicio() {
+    const fechaInicio = document.getElementById('fecha_inicio').value;
+    const fechaFinal = document.getElementById('fecha_final').value;
+    const horaInicio = document.getElementById('hora_inicio').value;
+    const horaFin = document.getElementById('hora_fin').value;
+    
+    if (fechaInicio && fechaFinal && horaInicio && horaFin) {
+        const inicio = new Date(fechaInicio + 'T' + horaInicio);
+        const fin = new Date(fechaFinal + 'T' + horaFin);
+        
+        if (fin < inicio) {
+            document.getElementById('duracion_servicio').innerHTML = 
+                '<span class="text-danger">Error: La fecha/hora final debe ser posterior a la inicial</span>';
+            return;
+        }
+
+        const diferencia = fin - inicio;
+        const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+        const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+
+        let duracionTexto = '';
+        if (dias > 0) duracionTexto += `${dias} día${dias > 1 ? 's' : ''}, `;
+        if (horas > 0) duracionTexto += `${horas} hora${horas > 1 ? 's' : ''}, `;
+        duracionTexto += `${minutos} minuto${minutos > 1 ? 's' : ''}`;
+
+        document.getElementById('duracion_servicio').innerHTML = 
+            `<span class="duration-value">${duracionTexto}</span>`;
+    }
+}
+
+function calcularDistancia() {
+    const direccionBase = "2451 West Grapevine Mills Circle Grapevine, TX 76051 suite 544";
+    const direccionCliente = document.getElementById('direccion_cliente').value;
+    const ciudad = document.querySelector('input[name="ciudad"]').value;
+    
+    if (!direccionCliente || !ciudad) {
+        document.getElementById('distancia_recorrido').innerHTML = 
+            '<span class="text-warning">Por favor, ingrese la dirección completa y la ciudad</span>';
+        return;
+    }
+
+    const direccionCompleta = `${direccionCliente}, ${ciudad}`;
+    document.getElementById('distancia_recorrido').innerHTML = '<span>Calculando distancia...</span>';
+    
+    // Simulación de cálculo de distancia
+    setTimeout(() => {
+        const distancia = (Math.random() * 50 + 10).toFixed(1);
+        const tiempo = Math.round(distancia * 2 + 15);
+        
+        document.getElementById('distancia_recorrido').innerHTML = `
+            <div>
+                <strong>${distancia} millas</strong><br>
+                <small>Tiempo estimado: ${tiempo} minutos</small>
+            </div>
+        `;
+    }, 1000);
+}
+
+// Event Listeners
+document.getElementById('fecha_inicio').addEventListener('change', calcularDuracionServicio);
+document.getElementById('fecha_final').addEventListener('change', calcularDuracionServicio);
+document.getElementById('hora_inicio').addEventListener('change', calcularDuracionServicio);
+document.getElementById('hora_fin').addEventListener('change', calcularDuracionServicio);
+
+// Configurar fechas mínimas
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('fecha_inicio').min = today;
+document.getElementById('fecha_final').min = today;
+
+// Validación de fechas
+document.getElementById('fecha_inicio').addEventListener('change', function() {
+    document.getElementById('fecha_final').min = this.value;
+});
+
+// Preview de archivos
+['foto1', 'foto2'].forEach(id => {
+    document.getElementById(id).addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            const preview = document.getElementById('preview' + id.slice(-1));
+            
+            reader.onload = e => {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                preview.innerHTML = '';
+                preview.appendChild(img);
+            };
+            
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+});
+</script>
+{% endblock %} 

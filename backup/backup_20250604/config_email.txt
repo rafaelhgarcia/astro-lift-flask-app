@@ -1,0 +1,56 @@
+He creado un formulario de contacto completo con las siguientes características:
+Diseño moderno que coincide con el estilo de la página principal
+Campos para:
+Nombre
+Empresa
+Email
+Teléfono
+Tipo de servicio (selector)
+Mensaje
+Funcionalidad de envío de correos que:
+Envía un correo a tu dirección con los detalles del contacto
+Envía un correo de confirmación al cliente
+Maneja errores y muestra mensajes de éxito/error
+Para que funcione el envío de correos, necesitas:
+Instalar las nuevas dependencias:
+Apply to index.html
+Run
+Configurar las variables de entorno en el archivo .env:
+MAIL_USERNAME: Tu correo de Gmail
+MAIL_PASSWORD: Una contraseña de aplicación de Gmail
+MAIL_DEFAULT_SENDER: Tu correo de Gmail
+¿Te gustaría que te explique cómo configurar la contraseña de aplicación en Gmail para que funcione el envío de correos?
+si por favor 
+
+Te explicaré paso a paso cómo configurar Gmail para que funcione el envío de correos:
+Iniciar sesión en tu cuenta de Gmail
+Ve a https://gmail.com
+Inicia sesión con tu cuenta
+Acceder a la configuración de seguridad
+Ve a https://myaccount.google.com/security
+O haz clic en tu foto de perfil > "Gestionar tu cuenta de Google" > "Seguridad"
+Habilitar la verificación en dos pasos
+Si no la tienes activada, primero debes activar la "Verificación en dos pasos"
+Esto es necesario para crear contraseñas de aplicación
+Crear una contraseña de aplicación
+Busca "Contraseñas de aplicación" (está en la misma página de seguridad)
+Haz clic en "Contraseñas de aplicación"
+En "Seleccionar aplicación" elige "Otra (nombre personalizado)"
+Escribe un nombre como "Flask Web App"
+Haz clic en "Generar"
+Google te mostrará una contraseña de 16 caracteres
+Configurar el archivo .env
+Crea un archivo llamado .env en la carpeta flask_app con este contenido:
+Apply to index.html
+Reemplaza:
+tu_correo@gmail.com con tu dirección de Gmail
+la_contraseña_de_16_caracteres_que_generaste con la contraseña que Google te dio
+Instalar las dependencias
+Ejecuta este comando en la terminal:
+Apply to index.html
+Run
+Una vez configurado, el formulario de contacto:
+Enviará un correo a tu Gmail con los detalles del mensaje
+Enviará una confirmación automática al cliente
+Mostrará mensajes de éxito o error según corresponda
+¿Quieres que te ayude a configurar alguno de estos pasos?

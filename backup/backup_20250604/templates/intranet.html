@@ -1,0 +1,678 @@
+{% extends "base.html" %}
+
+{% block title %}Administrador de Servicios - Astro Lift Rental{% endblock %}
+
+{% block extra_css %}
+<style>
+    .task-container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .task-form {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        transition: all 0.3s ease;
+    }
+
+    .task-form:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .task-item {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 20px;
+        margin-bottom: 15px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .task-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .task-item.completed {
+        background: rgba(40, 167, 69, 0.1);
+        border-color: rgba(40, 167, 69, 0.2);
+    }
+
+    .task-item.completed h5 {
+        text-decoration: line-through;
+        opacity: 0.7;
+    }
+
+    .form-control, .form-select {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 12px;
+        height: auto;
+    }
+
+    .form-control:focus, .form-select:focus {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+        box-shadow: 0 0 0 0.25rem rgba(255,255,255,0.1);
+        border-color: rgba(255,255,255,0.3);
+    }
+
+    .form-select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    }
+
+    .form-select option {
+        background: var(--background-color);
+        color: white;
+    }
+
+    .btn-task {
+        padding: 12px 20px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-task:hover {
+        transform: translateY(-1px);
+    }
+
+    .task-date {
+        font-size: 0.85rem;
+        opacity: 0.7;
+        margin-bottom: 5px;
+    }
+
+    .task-description {
+        font-size: 0.95rem;
+        opacity: 0.9;
+    }
+
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+
+    .service-badge {
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        margin-bottom: 10px;
+        display: inline-block;
+    }
+
+    .service-alquiler {
+        background: rgba(0, 123, 255, 0.2);
+        border: 1px solid rgba(0, 123, 255, 0.3);
+    }
+
+    .service-transporte {
+        background: rgba(40, 167, 69, 0.2);
+        border: 1px solid rgba(40, 167, 69, 0.3);
+    }
+
+    .service-mantenimiento {
+        background: rgba(255, 193, 7, 0.2);
+        border: 1px solid rgba(255, 193, 7, 0.3);
+    }
+
+    .form-row {
+        margin-bottom: 15px;
+    }
+
+    .client-details {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 15px;
+    }
+
+    .client-details-title {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        margin-bottom: 10px;
+    }
+
+    .task-photos {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 15px;
+    }
+
+    .task-photos img {
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+        cursor: pointer;
+    }
+
+    .task-photos img:hover {
+        transform: scale(1.05);
+    }
+
+    input[type="file"] {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px dashed rgba(255, 255, 255, 0.2);
+        padding: 0.5rem;
+        cursor: pointer;
+    }
+
+    input[type="file"]:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .form-label {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .camera-container {
+        margin-top: 1rem;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 1rem;
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    .camera-container video {
+        width: 100%;
+        max-width: 400px;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+
+    .preview-container {
+        text-align: center;
+    }
+
+    .preview-container img {
+        max-width: 100%;
+        max-height: 200px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .input-group .btn-outline-light {
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .input-group .btn-outline-light:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .service-duration {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .duration-display {
+        font-size: 1.1rem;
+        color: #fff;
+        text-align: center;
+        padding: 0.5rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 6px;
+    }
+
+    .duration-value {
+        font-weight: 500;
+        color: #00ff9d;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-center mb-4">Administrador de Servicios</h2>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+    <div class="stats-container reveal">
+        <div class="stat-card">
+            <i class="fas fa-tasks fa-2x"></i>
+            <div class="stat-number">{{ tareas|length }}</div>
+            <div class="stat-label">Total de Servicios</div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-check-circle fa-2x"></i>
+            <div class="stat-number">{{ tareas|selectattr('completada')|list|length }}</div>
+            <div class="stat-label">Servicios Completados</div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-clock fa-2x"></i>
+            <div class="stat-number">{{ tareas|rejectattr('completada')|list|length }}</div>
+            <div class="stat-label">Servicios Pendientes</div>
+        </div>
+    </div>
+
+    <div class="task-container reveal">
+        <form class="task-form" method="POST" action="{{ url_for('agregar_tarea') }}" enctype="multipart/form-data">
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <select class="form-select" name="titulo" required>
+                        <option value="" disabled selected>Seleccionar Servicio</option>
+                        <option value="Alquiler">Alquiler de Equipos</option>
+                        <option value="Transporte">Servicio de Transporte</option>
+                        <option value="Mantenimiento">Mantenimiento</option>
+                    </select>
+                </div>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" name="descripcion" placeholder="Detalles del servicio" required>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label for="foto1" class="form-label">Foto del Equipo</label>
+                    <div class="input-group">
+                        <input type="file" class="form-control" id="foto1" name="foto1" accept="image/*" capture="environment" required>
+                        <button type="button" class="btn btn-outline-light" onclick="activarCamara('camera1', 'foto1', 'preview1')">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+                    <div id="preview1" class="mt-2 preview-container"></div>
+                </div>
+                <div class="col-md-6">
+                    <label for="foto2" class="form-label">Foto Adicional</label>
+                    <div class="input-group">
+                        <input type="file" class="form-control" id="foto2" name="foto2" accept="image/*" capture="environment">
+                        <button type="button" class="btn btn-outline-light" onclick="activarCamara('camera2', 'foto2', 'preview2')">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+                    <div id="preview2" class="mt-2 preview-container"></div>
+                </div>
+            </div>
+
+            <div id="camera1" class="camera-container" style="display: none;">
+                <video id="video1" autoplay playsinline></video>
+                <button type="button" class="btn btn-primary mt-2" onclick="tomarFoto('video1', 'foto1', 'preview1', 'camera1')">
+                    <i class="fas fa-camera me-2"></i>Capturar
+                </button>
+            </div>
+
+            <div id="camera2" class="camera-container" style="display: none;">
+                <video id="video2" autoplay playsinline></video>
+                <button type="button" class="btn btn-primary mt-2" onclick="tomarFoto('video2', 'foto2', 'preview2', 'camera2')">
+                    <i class="fas fa-camera me-2"></i>Capturar
+                </button>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-3">
+                    <label for="fecha_inicio" class="form-label">Fecha de Inicio</label>
+                    <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="fecha_final" class="form-label">Fecha Final</label>
+                    <input type="date" class="form-control" id="fecha_final" name="fecha_final" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="hora_inicio" class="form-label">Hora de Inicio</label>
+                    <input type="time" class="form-control" id="hora_inicio" name="hora_inicio" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="hora_fin" class="form-label">Hora de Finalización</label>
+                    <input type="time" class="form-control" id="hora_fin" name="hora_fin" required>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-12">
+                    <div class="service-duration p-3">
+                        <label class="form-label mb-2">Duración del Servicio</label>
+                        <div id="duracion_servicio" class="duration-display">
+                            <span class="duration-value">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="client-details">
+                <div class="client-details-title">Datos del Cliente</div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="nombre" placeholder="Nombre" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="apellido" placeholder="Apellido" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="email" class="form-control" name="email" placeholder="Email" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="tel" class="form-control" name="telefono" placeholder="Teléfono" required>
+                    </div>
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" name="direccion" placeholder="Dirección" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="ciudad" placeholder="Ciudad" required>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-primary w-100 btn-task">
+                            <i class="fas fa-plus me-2"></i>Agregar Servicio
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        {% if tareas %}
+            {% for tarea in tareas %}
+                <div class="task-item {{ 'completed' if tarea.completada }} slide-up">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="task-date">
+                                <i class="far fa-calendar-alt me-1"></i>
+                                {{ tarea.fecha.strftime('%d/%m/%Y %H:%M') }}
+                            </div>
+                            <div class="service-badge service-{{ tarea.titulo.lower() }}">
+                                {{ tarea.titulo }}
+                            </div>
+                            <p class="task-description mb-2">{{ tarea.descripcion }}</p>
+                            {% if tarea.fecha_servicio %}
+                            <div class="service-schedule mb-2">
+                                <p class="mb-1"><strong>Fecha del Servicio:</strong> {{ tarea.fecha_servicio.strftime('%d/%m/%Y') }}</p>
+                                <p class="mb-1"><strong>Horario:</strong> {{ tarea.hora_inicio.strftime('%H:%M') }} - {{ tarea.hora_fin.strftime('%H:%M') }}</p>
+                            </div>
+                            {% endif %}
+                            {% if tarea.nombre %}
+                            <div class="client-info small">
+                                <p class="mb-1"><strong>Cliente:</strong> {{ tarea.nombre }} {{ tarea.apellido }}</p>
+                                <p class="mb-1"><strong>Email:</strong> {{ tarea.email }}</p>
+                                <p class="mb-1"><strong>Teléfono:</strong> {{ tarea.telefono }}</p>
+                                <p class="mb-1"><strong>Dirección:</strong> {{ tarea.direccion }}</p>
+                                <p class="mb-0"><strong>Ciudad:</strong> {{ tarea.ciudad }}</p>
+                            </div>
+                            {% endif %}
+                            {% if tarea.foto1_url or tarea.foto2_url %}
+                            <div class="task-photos mt-3">
+                                {% if tarea.foto1_url %}
+                                <div class="mb-2">
+                                    <strong>Foto del Equipo:</strong><br>
+                                    <img src="{{ url_for('static', filename=tarea.foto1_url) }}" class="img-fluid rounded" style="max-height: 200px;" alt="Foto del Equipo">
+                                </div>
+                                {% endif %}
+                                {% if tarea.foto2_url %}
+                                <div>
+                                    <strong>Foto Adicional:</strong><br>
+                                    <img src="{{ url_for('static', filename=tarea.foto2_url) }}" class="img-fluid rounded" style="max-height: 200px;" alt="Foto Adicional">
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="d-flex">
+                            <a href="{{ url_for('completar_tarea', id=tarea.id) }}" 
+                               class="btn {{ 'btn-success' if tarea.completada else 'btn-outline-success' }} btn-sm btn-task me-2"
+                               title="{{ 'Marcar como pendiente' if tarea.completada else 'Marcar como completado' }}">
+                                <i class="fas {{ 'fa-check-circle' if tarea.completada else 'fa-circle' }}"></i>
+                            </a>
+                            <a href="{{ url_for('eliminar_tarea', id=tarea.id) }}" 
+                               class="btn btn-outline-danger btn-sm btn-task"
+                               onclick="return confirm('¿Estás seguro de que deseas eliminar este servicio?')"
+                               title="Eliminar servicio">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-clipboard-list fa-3x mb-3 text-muted"></i>
+                <p class="text-muted">No hay servicios registrados</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Configurar fecha mínima como hoy
+    const fechaServicio = document.getElementById('fecha_servicio');
+    const today = new Date().toISOString().split('T')[0];
+    fechaServicio.min = today;
+
+    // Animación para las estadísticas
+    const stats = document.querySelectorAll('.stat-number');
+    stats.forEach(stat => {
+        const finalValue = parseInt(stat.textContent);
+        let currentValue = 0;
+        const duration = 1000;
+        const increment = finalValue / (duration / 16);
+
+        function updateValue() {
+            if (currentValue < finalValue) {
+                currentValue = Math.min(currentValue + increment, finalValue);
+                stat.textContent = Math.round(currentValue);
+                requestAnimationFrame(updateValue);
+            }
+        }
+
+        updateValue();
+    });
+});
+
+let streamRef1 = null;
+let streamRef2 = null;
+
+async function activarCamara(cameraId, inputId, previewId) {
+    try {
+        const cameraContainer = document.getElementById(cameraId);
+        const video = cameraContainer.querySelector('video');
+        
+        if (cameraContainer.style.display === 'none') {
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { 
+                    facingMode: 'environment',
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                } 
+            });
+            
+            video.srcObject = stream;
+            if (cameraId === 'camera1') {
+                streamRef1 = stream;
+            } else {
+                streamRef2 = stream;
+            }
+            
+            cameraContainer.style.display = 'block';
+        } else {
+            cerrarCamara(cameraId);
+        }
+    } catch (err) {
+        console.error('Error al acceder a la cámara:', err);
+        alert('No se pudo acceder a la cámara. Por favor, verifica los permisos.');
+    }
+}
+
+function cerrarCamara(cameraId) {
+    const container = document.getElementById(cameraId);
+    const video = container.querySelector('video');
+    
+    if (cameraId === 'camera1' && streamRef1) {
+        streamRef1.getTracks().forEach(track => track.stop());
+        streamRef1 = null;
+    } else if (streamRef2) {
+        streamRef2.getTracks().forEach(track => track.stop());
+        streamRef2 = null;
+    }
+    
+    video.srcObject = null;
+    container.style.display = 'none';
+}
+
+function tomarFoto(videoId, inputId, previewId, cameraId) {
+    const video = document.getElementById(videoId);
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    const preview = document.getElementById(previewId);
+    
+    // Configurar el canvas con las dimensiones del video
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    // Dibujar el frame actual del video en el canvas
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    // Convertir la imagen a formato Blob
+    canvas.toBlob((blob) => {
+        // Crear un archivo a partir del blob
+        const file = new File([blob], 'foto.jpg', { type: 'image/jpeg' });
+        
+        // Crear un FileList simulado
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        
+        // Asignar el archivo al input
+        document.getElementById(inputId).files = dataTransfer.files;
+        
+        // Mostrar preview
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(blob);
+        preview.innerHTML = '';
+        preview.appendChild(img);
+        
+        // Cerrar la cámara
+        cerrarCamara(cameraId);
+    }, 'image/jpeg', 0.95);
+}
+
+// Limpiar las transmisiones de video al cerrar la página
+window.addEventListener('beforeunload', () => {
+    if (streamRef1) {
+        streamRef1.getTracks().forEach(track => track.stop());
+    }
+    if (streamRef2) {
+        streamRef2.getTracks().forEach(track => track.stop());
+    }
+});
+
+// Mostrar preview al seleccionar archivo
+document.getElementById('foto1').addEventListener('change', function(e) {
+    mostrarPreview(this, 'preview1');
+});
+
+document.getElementById('foto2').addEventListener('change', function(e) {
+    mostrarPreview(this, 'preview2');
+});
+
+function mostrarPreview(input, previewId) {
+    const preview = document.getElementById(previewId);
+    preview.innerHTML = '';
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            preview.appendChild(img);
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// Función para calcular la duración del servicio
+function calcularDuracionServicio() {
+    const fechaInicio = document.getElementById('fecha_inicio').value;
+    const fechaFinal = document.getElementById('fecha_final').value;
+    const horaInicio = document.getElementById('hora_inicio').value;
+    const horaFin = document.getElementById('hora_fin').value;
+    const duracionElement = document.getElementById('duracion_servicio');
+
+    if (fechaInicio && fechaFinal && horaInicio && horaFin) {
+        const inicio = new Date(fechaInicio + 'T' + horaInicio);
+        const fin = new Date(fechaFinal + 'T' + horaFin);
+        
+        if (fin < inicio) {
+            duracionElement.innerHTML = '<span class="duration-value text-danger">Error: La fecha/hora final debe ser posterior a la inicial</span>';
+            return;
+        }
+
+        const diferencia = fin - inicio;
+        const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+        const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+
+        let duracionTexto = '';
+        if (dias > 0) {
+            duracionTexto += `${dias} día${dias > 1 ? 's' : ''}, `;
+        }
+        if (horas > 0 || dias > 0) {
+            duracionTexto += `${horas} hora${horas > 1 ? 's' : ''}, `;
+        }
+        duracionTexto += `${minutos} minuto${minutos > 1 ? 's' : ''}`;
+
+        duracionElement.innerHTML = `<span class="duration-value">${duracionTexto}</span>`;
+    } else {
+        duracionElement.innerHTML = '<span class="duration-value">--</span>';
+    }
+}
+
+// Agregar event listeners para los campos de fecha y hora
+document.getElementById('fecha_inicio').addEventListener('change', calcularDuracionServicio);
+document.getElementById('fecha_final').addEventListener('change', calcularDuracionServicio);
+document.getElementById('hora_inicio').addEventListener('change', calcularDuracionServicio);
+document.getElementById('hora_fin').addEventListener('change', calcularDuracionServicio);
+
+// Configurar fecha mínima como hoy para ambos campos de fecha
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('fecha_inicio').min = today;
+document.getElementById('fecha_final').min = today;
+
+// Validar que la fecha final no sea anterior a la fecha inicial
+document.getElementById('fecha_inicio').addEventListener('change', function() {
+    document.getElementById('fecha_final').min = this.value;
+});
+</script>
+{% endblock %} 

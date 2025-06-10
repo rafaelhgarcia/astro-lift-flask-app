@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - Astro Lift Rental</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .contact-container {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 800px;
+            width: 90%;
+            margin: 20px auto;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .form-control, .form-select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #4a90e2;
+            color: white;
+            box-shadow: 0 0 0 0.25rem rgba(74, 144, 226, 0.25);
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .form-select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 6l4 4 4-4'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+        }
+
+        .form-select option {
+            background: #343a40;
+            color: white;
+        }
+
+        .btn-primary {
+            background: #4a90e2;
+            border: none;
+            padding: 12px 30px;
+            font-weight: 500;
+        }
+
+        .btn-primary:hover {
+            background: #357abd;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.3);
+        }
+
+        .contact-info {
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .contact-info i {
+            width: 30px;
+            color: #4a90e2;
+        }
+
+        .alert {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/" data-aos="fade-right" data-aos-duration="1000">
+                <i class="fas fa-truck-ramp me-2"></i>Astro Lift Rental
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="100">
+                        <a class="nav-link" href="/">Inicio</a>
+                    </li>
+                    <li class="nav-item" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
+                        <a class="nav-link active" href="/contacto">Contacto</a>
+                    </li>
+                    <li class="nav-item" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="300">
+                        <a class="nav-link" href="/intranet">
+                            <i class="fas fa-lock me-1"></i>Intranet
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="contact-container" data-aos="fade-up" data-aos-duration="1000">
+            <h2 class="text-white mb-4" data-aos="fade-up" data-aos-duration="800">Contáctanos</h2>
+            
+            <div class="contact-info" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
+                <p data-aos="fade-right" data-aos-duration="800" data-aos-delay="200">
+                    <i class="fas fa-phone"></i> (770) 560-2594
+                </p>
+                <p data-aos="fade-right" data-aos-duration="800" data-aos-delay="300">
+                    <i class="fas fa-envelope"></i> info@astrolift.com
+                </p>
+                <p data-aos="fade-right" data-aos-duration="800" data-aos-delay="400">
+                    <i class="fas fa-map-marker-alt"></i> 2451 West Grapevine Mills Circle<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Suite 544<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Grapevine, TX 76051
+                </p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}" data-aos="fade-up" data-aos-duration="800">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('enviar_contacto') }}" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+                <div class="row">
+                    <div class="col-md-6 mb-3" data-aos="fade-right" data-aos-duration="800" data-aos-delay="300">
+                        <label for="nombre" class="form-label text-white">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    </div>
+                    <div class="col-md-6 mb-3" data-aos="fade-left" data-aos-duration="800" data-aos-delay="300">
+                        <label for="empresa" class="form-label text-white">Empresa</label>
+                        <input type="text" class="form-control" id="empresa" name="empresa">
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3" data-aos="fade-right" data-aos-duration="800" data-aos-delay="400">
+                        <label for="email" class="form-label text-white">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="col-md-6 mb-3" data-aos="fade-left" data-aos-duration="800" data-aos-delay="400">
+                        <label for="telefono" class="form-label text-white">Teléfono</label>
+                        <input type="tel" class="form-control" id="telefono" name="telefono" required>
+                    </div>
+                </div>
+
+                <div class="mb-3" data-aos="fade-up" data-aos-duration="800" data-aos-delay="500">
+                    <label for="tipo_servicio" class="form-label text-white">Tipo de Servicio</label>
+                    <select class="form-select" id="tipo_servicio" name="tipo_servicio" required>
+                        <option value="">Seleccione un servicio</option>
+                        <option value="plataforma_tijera">Plataforma de Tijera</option>
+                        <option value="brazo_articulado">Brazo Articulado</option>
+                        <option value="transporte">Transporte de Maquinaria</option>
+                        <option value="mantenimiento">Mantenimiento</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+
+                <div class="mb-3" data-aos="fade-up" data-aos-duration="800" data-aos-delay="600">
+                    <label for="mensaje" class="form-label text-white">Mensaje</label>
+                    <textarea class="form-control" id="mensaje" name="mensaje" rows="4" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary" data-aos="fade-up" data-aos-duration="800" data-aos-delay="700">
+                    <i class="fas fa-paper-plane me-2"></i>Enviar Mensaje
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            once: true,
+            mirror: false,
+            offset: 100
+        });
+    </script>
+</body>
+</html> 
