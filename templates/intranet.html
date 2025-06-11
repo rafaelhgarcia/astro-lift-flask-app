@@ -303,8 +303,6 @@
                     <select class="form-select" name="titulo" required>
                         <option value="" disabled selected>Seleccionar Servicio</option>
                         <option value="Alquiler">Alquiler de Equipos</option>
-                        <option value="Transporte">Servicio de Transporte</option>
-                        <option value="Mantenimiento">Mantenimiento</option>
                     </select>
                 </div>
                 <div class="col-md-4">
@@ -312,6 +310,12 @@
                 </div>
                 <div class="col-md-4">
                     <input type="text" class="form-control" name="serial_maquina" placeholder="Serial de Máquina" title="Ingrese el código serial de la máquina">
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-12">
+                    <textarea class="form-control" name="observaciones" placeholder="Observaciones" rows="3" title="Ingrese observaciones adicionales sobre el servicio"></textarea>
                 </div>
             </div>
 
@@ -392,7 +396,7 @@
                         <input type="text" class="form-control" name="apellido" placeholder="Apellido" required>
                     </div>
                     <div class="col-md-6">
-                        <input type="email" class="form-control" name="email" placeholder="Email" required>
+                        <input type="email" class="form-control" name="email" placeholder="Email">
                     </div>
                     <div class="col-md-6">
                         <input type="tel" class="form-control" name="telefono" placeholder="Teléfono" required>
@@ -400,10 +404,7 @@
                     <div class="col-md-12">
                         <input type="text" class="form-control" name="direccion" placeholder="Dirección" required>
                     </div>
-                    <div class="col-md-6">
-                        <input type="text" class="form-control" name="ciudad" placeholder="Ciudad" required>
-                    </div>
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <button type="submit" class="btn btn-primary w-100 btn-task">
                             <i class="fas fa-plus me-2"></i>Agregar Servicio
                         </button>
@@ -429,6 +430,12 @@
                             <div class="serial-info mb-2">
                                 <strong><i class="fas fa-barcode me-1"></i>Serial de Máquina:</strong> 
                                 <span class="badge bg-info">{{ tarea.serial_maquina }}</span>
+                            </div>
+                            {% endif %}
+                            {% if tarea.observaciones %}
+                            <div class="observaciones-info mb-2">
+                                <strong><i class="fas fa-sticky-note me-1"></i>Observaciones:</strong> 
+                                <p class="mt-1 mb-0 text-muted">{{ tarea.observaciones }}</p>
                             </div>
                             {% endif %}
                             {% if tarea.fecha_servicio %}
