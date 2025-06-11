@@ -325,7 +325,7 @@
                     <div id="preview1" class="mt-2 preview-container"></div>
                 </div>
                 <div class="col-md-6">
-                    <label for="foto2" class="form-label">Foto Adicional</label>
+                    <label for="foto2" class="form-label">Foto Documento</label>
                     <div class="input-group">
                         <input type="file" class="form-control" id="foto2" name="foto2" accept="image/*" capture="environment">
                         <button type="button" class="btn btn-outline-light" onclick="activarCamara('camera2', 'foto2', 'preview2')">
@@ -447,8 +447,8 @@
                                 {% endif %}
                                 {% if tarea.foto2_url %}
                                 <div>
-                                    <strong>Foto Adicional:</strong><br>
-                                    <img src="{{ url_for('static', filename=tarea.foto2_url) }}" class="img-fluid rounded" style="max-height: 200px;" alt="Foto Adicional">
+                                    <strong>Foto Documento:</strong><br>
+                                    <img src="{{ url_for('static', filename=tarea.foto2_url) }}" class="img-fluid rounded" style="max-height: 200px;" alt="Foto Documento">
                                 </div>
                                 {% endif %}
                             </div>
