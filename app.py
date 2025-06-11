@@ -38,22 +38,9 @@ app.logger.info('Iniciando aplicación')
 app.secret_key = os.getenv('SECRET_KEY', 'mi_clave_secreta')
 
 # Configuración de la base de datos
-# En producción usa PostgreSQL, en desarrollo SQLite
-database_url = os.environ.get('DATABASE_URL')
-if database_url:
-    # Render/PostgreSQL - Fix SSL issue
-    if database_url.startswith("postgres://"):
-        database_url = database_url.replace("postgres://", "postgresql://", 1)
-    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-        'pool_recycle': 300,
-        'pool_pre_ping': True,
-    }
-    db_path = None  # No db_path para PostgreSQL
-else:
-    # Desarrollo local/SQLite
-    db_path = os.path.join(instance_path, 'tareas.db')
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+# Usar SQLite tanto en desarrollo como en producción (más simple)
+db_path = os.path.join(instance_path, 'tareas.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Inicializar SQLAlchemy
@@ -108,8 +95,8 @@ class Usuario(db.Model):
 # Crear las tablas de la base de datos
 def init_db():
     try:
-        # Asegurarse de que el directorio instance existe (solo para SQLite)
-        if db_path and not os.path.exists('instance'):
+        # Asegurarse de que el directorio instance existe
+        if not os.path.exists('instance'):
             os.makedirs('instance')
         
         # Crear todas las tablas con el nuevo campo
@@ -125,8 +112,7 @@ def init_db():
             # La columna ya existe o hubo un error
             pass
         
-        database_info = db_path if db_path else "PostgreSQL en Render"
-        app.logger.info(f'Base de datos inicializada correctamente: {database_info}')
+        app.logger.info(f'Base de datos SQLite inicializada correctamente: {db_path}')
         return True
     except Exception as e:
         app.logger.error(f'Error al inicializar la base de datos: {str(e)}')
