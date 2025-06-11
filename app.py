@@ -196,6 +196,11 @@ def agregar_tarea():
         serial_maquina = request.form.get('serial_maquina')
         observaciones = request.form.get('observaciones')
         duracion_servicio = request.form.get('duracion_servicio')
+        fecha_inicio = request.form.get('fecha_inicio')
+        fecha_final = request.form.get('fecha_final')
+        
+        # Debug: Log para verificar que se recibe la duración
+        app.logger.info(f'Duración recibida: {duracion_servicio}')
         if titulo and descripcion:
             nueva_tarea = Tarea(
                 titulo=titulo,
