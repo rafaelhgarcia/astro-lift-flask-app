@@ -360,12 +360,8 @@
                     <input type="date" class="form-control" id="fecha_final" name="fecha_final" required>
                 </div>
                 <div class="col-md-3">
-                    <label for="hora_inicio" class="form-label">Hora de Inicio</label>
-                    <input type="time" class="form-control" id="hora_inicio" name="hora_inicio" required>
                 </div>
                 <div class="col-md-3">
-                    <label for="hora_fin" class="form-label">Hora de Finalización</label>
-                    <input type="time" class="form-control" id="hora_fin" name="hora_fin" required>
                 </div>
             </div>
 
@@ -432,7 +428,6 @@
                             {% if tarea.fecha_servicio %}
                             <div class="service-schedule mb-2">
                                 <p class="mb-1"><strong>Fecha del Servicio:</strong> {{ tarea.fecha_servicio.strftime('%d/%m/%Y') }}</p>
-                                <p class="mb-1"><strong>Horario:</strong> {{ tarea.hora_inicio.strftime('%H:%M') }} - {{ tarea.hora_fin.strftime('%H:%M') }}</p>
                             </div>
                             {% endif %}
                             {% if tarea.nombre %}
@@ -641,8 +636,6 @@ function mostrarPreview(input, previewId) {
 function calcularDuracionServicio() {
     const fechaInicio = document.getElementById('fecha_inicio').value;
     const fechaFinal = document.getElementById('fecha_final').value;
-    const horaInicio = document.getElementById('hora_inicio').value;
-    const horaFin = document.getElementById('hora_fin').value;
     const duracionElement = document.getElementById('duracion_servicio');
 
     if (fechaInicio && fechaFinal && horaInicio && horaFin) {
@@ -677,8 +670,6 @@ function calcularDuracionServicio() {
 // Agregar event listeners para los campos de fecha y hora
 document.getElementById('fecha_inicio').addEventListener('change', calcularDuracionServicio);
 document.getElementById('fecha_final').addEventListener('change', calcularDuracionServicio);
-document.getElementById('hora_inicio').addEventListener('change', calcularDuracionServicio);
-document.getElementById('hora_fin').addEventListener('change', calcularDuracionServicio);
 
 // Configurar fecha mínima como hoy para ambos campos de fecha
 const today = new Date().toISOString().split('T')[0];
