@@ -76,6 +76,7 @@ class Tarea(db.Model):
     completada = db.Column(db.Boolean, default=False)
     serial_maquina = db.Column(db.String(100), nullable=True)
     observaciones = db.Column(db.Text, nullable=True)
+    duracion_servicio = db.Column(db.String(100), nullable=True)
 
     def __repr__(self):
         return f'<Tarea {self.titulo}>'
@@ -119,6 +120,16 @@ def init_db():
                 conn.execute(db.text("ALTER TABLE tarea ADD COLUMN observaciones TEXT"))
                 conn.commit()
                 app.logger.info('Columna observaciones agregada exitosamente')
+        except Exception:
+            # La columna ya existe o hubo un error
+            pass
+            
+        # Agregar columna duracion_servicio si no existe
+        try:
+            with db.engine.connect() as conn:
+                conn.execute(db.text("ALTER TABLE tarea ADD COLUMN duracion_servicio VARCHAR(100)"))
+                conn.commit()
+                app.logger.info('Columna duracion_servicio agregada exitosamente')
         except Exception:
             # La columna ya existe o hubo un error
             pass
@@ -184,13 +195,15 @@ def agregar_tarea():
         descripcion = request.form.get('descripcion')
         serial_maquina = request.form.get('serial_maquina')
         observaciones = request.form.get('observaciones')
+        duracion_servicio = request.form.get('duracion_servicio')
         if titulo and descripcion:
             nueva_tarea = Tarea(
                 titulo=titulo,
                 descripcion=descripcion,
                 fecha=datetime.now(),
                 serial_maquina=serial_maquina,
-                observaciones=observaciones
+                observaciones=observaciones,
+                duracion_servicio=duracion_servicio
             )
             db.session.add(nueva_tarea)
             db.session.commit()
