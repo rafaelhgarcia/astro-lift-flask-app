@@ -38,9 +38,15 @@ app.logger.info('Iniciando aplicación')
 app.secret_key = os.getenv('SECRET_KEY', 'mi_clave_secreta')
 
 # Configuración de la base de datos
-# Usar SQLite tanto en desarrollo como en producción (más simple)
-db_path = os.path.join(instance_path, 'tareas.db')
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+# En producción usa PostgreSQL, en desarrollo SQLite
+database_url = os.environ.get('DATABASE_URL')
+if database_url:
+    # Render/PostgreSQL
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+else:
+    # Desarrollo local/SQLite
+    db_path = os.path.join(instance_path, 'tareas.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Inicializar SQLAlchemy
@@ -75,8 +81,6 @@ class Tarea(db.Model):
     fecha = db.Column(db.DateTime, default=datetime.now)
     completada = db.Column(db.Boolean, default=False)
     serial_maquina = db.Column(db.String(100), nullable=True)
-    observaciones = db.Column(db.Text, nullable=True)
-    duracion_servicio = db.Column(db.String(100), nullable=True)
 
     def __repr__(self):
         return f'<Tarea {self.titulo}>'
@@ -114,27 +118,7 @@ def init_db():
             # La columna ya existe o hubo un error
             pass
             
-        # Agregar columna observaciones si no existe
-        try:
-            with db.engine.connect() as conn:
-                conn.execute(db.text("ALTER TABLE tarea ADD COLUMN observaciones TEXT"))
-                conn.commit()
-                app.logger.info('Columna observaciones agregada exitosamente')
-        except Exception:
-            # La columna ya existe o hubo un error
-            pass
-            
-        # Agregar columna duracion_servicio si no existe
-        try:
-            with db.engine.connect() as conn:
-                conn.execute(db.text("ALTER TABLE tarea ADD COLUMN duracion_servicio VARCHAR(100)"))
-                conn.commit()
-                app.logger.info('Columna duracion_servicio agregada exitosamente')
-        except Exception:
-            # La columna ya existe o hubo un error
-            pass
-        
-        app.logger.info(f'Base de datos SQLite inicializada correctamente: {db_path}')
+        app.logger.info(f'Base de datos inicializada correctamente en {db_path}')
         return True
     except Exception as e:
         app.logger.error(f'Error al inicializar la base de datos: {str(e)}')
@@ -194,21 +178,12 @@ def agregar_tarea():
         titulo = request.form.get('titulo')
         descripcion = request.form.get('descripcion')
         serial_maquina = request.form.get('serial_maquina')
-        observaciones = request.form.get('observaciones')
-        duracion_servicio = request.form.get('duracion_servicio')
-        fecha_inicio = request.form.get('fecha_inicio')
-        fecha_final = request.form.get('fecha_final')
-        
-        # Debug: Log para verificar que se recibe la duración
-        app.logger.info(f'Duración recibida: {duracion_servicio}')
         if titulo and descripcion:
             nueva_tarea = Tarea(
                 titulo=titulo,
                 descripcion=descripcion,
                 fecha=datetime.now(),
-                serial_maquina=serial_maquina,
-                observaciones=observaciones,
-                duracion_servicio=duracion_servicio
+                serial_maquina=serial_maquina
             )
             db.session.add(nueva_tarea)
             db.session.commit()
