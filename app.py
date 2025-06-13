@@ -82,6 +82,19 @@ class Tarea(db.Model):
     completada = db.Column(db.Boolean, default=False)
     serial_maquina = db.Column(db.String(100), nullable=True)
     observaciones = db.Column(db.Text, nullable=True)
+    # Nuevos campos para datos del cliente y fotos
+    nombre = db.Column(db.String(100), nullable=True)
+    apellido = db.Column(db.String(100), nullable=True)
+    email = db.Column(db.String(120), nullable=True)
+    telefono = db.Column(db.String(50), nullable=True)
+    direccion = db.Column(db.String(200), nullable=True)
+    ciudad = db.Column(db.String(100), nullable=True)
+    foto1_url = db.Column(db.String(200), nullable=True)
+    foto2_url = db.Column(db.String(200), nullable=True)
+    fecha_inicio = db.Column(db.Date, nullable=True)
+    fecha_final = db.Column(db.Date, nullable=True)
+    hora_inicio = db.Column(db.Time, nullable=True)
+    hora_fin = db.Column(db.Time, nullable=True)
 
     def __repr__(self):
         return f'<Tarea {self.titulo}>'
@@ -180,29 +193,90 @@ def logout():
 @app.route('/intranet')
 @login_required
 def intranet():
-    tareas = Tarea.query.all()
+    # Obtener filtros desde la URL
+    filtro_fecha = request.args.get('filtro_fecha')
+    filtro_cliente = request.args.get('filtro_cliente')
+
+    # Construir la consulta base
+    query = Tarea.query
+
+    # Aplicar filtro por fecha (fecha_inicio o fecha_final)
+    if filtro_fecha:
+        query = query.filter(
+            (Tarea.fecha_inicio == filtro_fecha) | (Tarea.fecha_final == filtro_fecha)
+        )
+
+    # Aplicar filtro por nombre de cliente (nombre o apellido)
+    if filtro_cliente:
+        query = query.filter(
+            (Tarea.nombre.ilike(f"%{filtro_cliente}%")) | (Tarea.apellido.ilike(f"%{filtro_cliente}%"))
+        )
+
+    tareas = query.order_by(Tarea.fecha.desc()).all()
     return render_template('intranet.html', tareas=tareas)
 
 @app.route('/agregar_tarea', methods=['POST'])
 def agregar_tarea():
     try:
+        # Datos del formulario
         titulo = request.form.get('titulo')
         descripcion = request.form.get('descripcion')
         serial_maquina = request.form.get('serial_maquina')
         observaciones = request.form.get('observaciones')
+        nombre = request.form.get('nombre')
+        apellido = request.form.get('apellido')
+        email = request.form.get('email')
+        telefono = request.form.get('telefono')
+        direccion = request.form.get('direccion')
+        ciudad = request.form.get('ciudad')
+        fecha_inicio = request.form.get('fecha_inicio')
+        fecha_final = request.form.get('fecha_final')
+        hora_inicio = request.form.get('hora_inicio')
+        hora_fin = request.form.get('hora_fin')
+
+        # Manejo de fotos
+        foto1 = request.files.get('foto1')
+        foto2 = request.files.get('foto2')
+        foto1_url = None
+        foto2_url = None
+
+        # Guardar foto1 si existe
+        if foto1 and foto1.filename:
+            foto1_path = os.path.join('static/images', foto1.filename)
+            foto1.save(foto1_path)
+            foto1_url = f'images/{foto1.filename}'
+
+        # Guardar foto2 si existe
+        if foto2 and foto2.filename:
+            foto2_path = os.path.join('static/images', foto2.filename)
+            foto2.save(foto2_path)
+            foto2_url = f'images/{foto2.filename}'
+
         if titulo and descripcion:
             nueva_tarea = Tarea(
                 titulo=titulo,
                 descripcion=descripcion,
                 fecha=datetime.now(),
                 serial_maquina=serial_maquina,
-                observaciones=observaciones
+                observaciones=observaciones,
+                nombre=nombre,
+                apellido=apellido,
+                email=email,
+                telefono=telefono,
+                direccion=direccion,
+                ciudad=ciudad,
+                foto1_url=foto1_url,
+                foto2_url=foto2_url,
+                fecha_inicio=fecha_inicio if fecha_inicio else None,
+                fecha_final=fecha_final if fecha_final else None,
+                hora_inicio=hora_inicio if hora_inicio else None,
+                hora_fin=hora_fin if hora_fin else None
             )
             db.session.add(nueva_tarea)
             db.session.commit()
             flash('¡Tarea agregada con éxito!', 'success')
         else:
-            flash('Por favor completa todos los campos', 'danger')
+            flash('Por favor completa todos los campos obligatorios', 'danger')
     except Exception as e:
         db.session.rollback()
         flash('Error al agregar la tarea', 'danger')
@@ -309,6 +383,46 @@ def enviar_contacto():
         flash('Hubo un error al enviar el mensaje. Por favor, intenta nuevamente.', 'danger')
 
     return redirect(url_for('contacto'))
+
+@app.route('/revisar_tarea/<int:id>')
+@login_required
+def revisar_tarea(id):
+    tarea = Tarea.query.get_or_404(id)
+    return render_template('revisar_tarea.html', tarea=tarea)
+
+@app.route('/editar_tarea/<int:id>', methods=['GET', 'POST'])
+@login_required
+def editar_tarea(id):
+    tarea = Tarea.query.get_or_404(id)
+    if request.method == 'POST':
+        tarea.titulo = request.form.get('titulo')
+        tarea.descripcion = request.form.get('descripcion')
+        tarea.serial_maquina = request.form.get('serial_maquina')
+        tarea.observaciones = request.form.get('observaciones')
+        tarea.nombre = request.form.get('nombre')
+        tarea.apellido = request.form.get('apellido')
+        tarea.email = request.form.get('email')
+        tarea.telefono = request.form.get('telefono')
+        tarea.direccion = request.form.get('direccion')
+        tarea.ciudad = request.form.get('ciudad')
+        tarea.fecha_inicio = request.form.get('fecha_inicio')
+        tarea.fecha_final = request.form.get('fecha_final')
+        tarea.hora_inicio = request.form.get('hora_inicio')
+        tarea.hora_fin = request.form.get('hora_fin')
+        foto1 = request.files.get('foto1')
+        foto2 = request.files.get('foto2')
+        if foto1 and foto1.filename:
+            foto1_path = os.path.join('static/images', foto1.filename)
+            foto1.save(foto1_path)
+            tarea.foto1_url = f'images/{foto1.filename}'
+        if foto2 and foto2.filename:
+            foto2_path = os.path.join('static/images', foto2.filename)
+            foto2.save(foto2_path)
+            tarea.foto2_url = f'images/{foto2.filename}'
+        db.session.commit()
+        flash('Servicio actualizado correctamente', 'success')
+        return redirect(url_for('intranet'))
+    return render_template('editar_tarea.html', tarea=tarea)
 
 @app.errorhandler(404)
 def not_found_error(error):

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Editar Servicio{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Editar Servicio</h2>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="row g-3 mb-3">
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="titulo" value="{{ tarea.titulo }}" required>
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="descripcion" value="{{ tarea.descripcion }}" required>
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="serial_maquina" value="{{ tarea.serial_maquina }}">
+            </div>
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col-12">
+                <textarea class="form-control" name="observaciones" rows="3">{{ tarea.observaciones }}</textarea>
+            </div>
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label for="foto1" class="form-label">Foto del Equipo</label>
+                <input type="file" class="form-control" id="foto1" name="foto1" accept="image/*">
+                {% if tarea.foto1_url %}
+                    <img src="{{ url_for('static', filename=tarea.foto1_url) }}" style="max-width:150px;" class="mt-2">
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <label for="foto2" class="form-label">Foto Adicional</label>
+                <input type="file" class="form-control" id="foto2" name="foto2" accept="image/*">
+                {% if tarea.foto2_url %}
+                    <img src="{{ url_for('static', filename=tarea.foto2_url) }}" style="max-width:150px;" class="mt-2">
+                {% endif %}
+            </div>
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col-md-3">
+                <input type="date" class="form-control" name="fecha_inicio" value="{{ tarea.fecha_inicio }}">
+            </div>
+            <div class="col-md-3">
+                <input type="date" class="form-control" name="fecha_final" value="{{ tarea.fecha_final }}">
+            </div>
+            <div class="col-md-3">
+                <input type="time" class="form-control" name="hora_inicio" value="{{ tarea.hora_inicio }}">
+            </div>
+            <div class="col-md-3">
+                <input type="time" class="form-control" name="hora_fin" value="{{ tarea.hora_fin }}">
+            </div>
+        </div>
+        <div class="client-details">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <input type="text" class="form-control" name="nombre" value="{{ tarea.nombre }}" required>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" name="apellido" value="{{ tarea.apellido }}" required>
+                </div>
+                <div class="col-md-6">
+                    <input type="email" class="form-control" name="email" value="{{ tarea.email }}">
+                </div>
+                <div class="col-md-6">
+                    <input type="tel" class="form-control" name="telefono" value="{{ tarea.telefono }}" required>
+                </div>
+                <div class="col-md-12">
+                    <input type="text" class="form-control" name="direccion" value="{{ tarea.direccion }}" required>
+                </div>
+                <div class="col-md-12">
+                    <input type="text" class="form-control" name="ciudad" value="{{ tarea.ciudad }}">
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Guardar Cambios</button>
+        <a href="{{ url_for('intranet') }}" class="btn btn-secondary mt-3">Cancelar</a>
+    </form>
+</div>
+{% endblock %} 

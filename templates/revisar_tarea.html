@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Revisar Servicio{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Detalles del Servicio</h2>
+    <ul class="list-group">
+        <li class="list-group-item"><strong>Servicio:</strong> {{ tarea.titulo }}</li>
+        <li class="list-group-item"><strong>Descripción:</strong> {{ tarea.descripcion }}</li>
+        <li class="list-group-item"><strong>Serial Máquina:</strong> {{ tarea.serial_maquina }}</li>
+        <li class="list-group-item"><strong>Observaciones:</strong> {{ tarea.observaciones }}</li>
+        <li class="list-group-item"><strong>Cliente:</strong> {{ tarea.nombre }} {{ tarea.apellido }}</li>
+        <li class="list-group-item"><strong>Email:</strong> {{ tarea.email }}</li>
+        <li class="list-group-item"><strong>Teléfono:</strong> {{ tarea.telefono }}</li>
+        <li class="list-group-item"><strong>Dirección:</strong> {{ tarea.direccion }}</li>
+        <li class="list-group-item"><strong>Ciudad:</strong> {{ tarea.ciudad }}</li>
+        <li class="list-group-item"><strong>Fecha Inicio:</strong> {{ tarea.fecha_inicio }}</li>
+        <li class="list-group-item"><strong>Fecha Final:</strong> {{ tarea.fecha_final }}</li>
+        <li class="list-group-item"><strong>Hora Inicio:</strong> {{ tarea.hora_inicio }}</li>
+        <li class="list-group-item"><strong>Hora Fin:</strong> {{ tarea.hora_fin }}</li>
+        <li class="list-group-item">
+            <strong>Foto del Equipo:</strong><br>
+            {% if tarea.foto1_url %}
+                <img src="{{ url_for('static', filename=tarea.foto1_url) }}" style="max-width:200px;">
+            {% endif %}
+        </li>
+        <li class="list-group-item">
+            <strong>Foto Adicional:</strong><br>
+            {% if tarea.foto2_url %}
+                <img src="{{ url_for('static', filename=tarea.foto2_url) }}" style="max-width:200px;">
+            {% endif %}
+        </li>
+    </ul>
+    <a href="{{ url_for('intranet') }}" class="btn btn-secondary mt-3">Volver</a>
+</div>
+{% endblock %} 
