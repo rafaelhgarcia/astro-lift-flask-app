@@ -25,26 +25,14 @@ if not os.path.exists(instance_path):
 
 app = Flask(__name__)
 
-# Configurar logging
-handler = RotatingFileHandler('logs/app.log', maxBytes=10000, backupCount=3, mode='a')
-handler.setFormatter(logging.Formatter(
-    '[%(asctime)s] %(levelname)s in %(module)s: %(message)s'
-))
-app.logger.addHandler(handler)
-app.logger.setLevel(logging.INFO)
-app.logger.info('Iniciando aplicación')
-
-# Configuración de Flask
-app.secret_key = os.getenv('SECRET_KEY', 'mi_clave_secreta')
+# Configuración general primero
+app.config.from_object(Config)
 
 # Configuración de la base de datos
-# En producción usa PostgreSQL, en desarrollo SQLite
 database_url = os.environ.get('DATABASE_URL')
 if database_url:
-    # Render/PostgreSQL
     app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 else:
-    # Desarrollo local/SQLite
     db_path = os.path.join(instance_path, 'tareas.db')
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
